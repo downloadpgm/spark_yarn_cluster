@@ -55,30 +55,64 @@ Start the YARN cluster by creating a Docker stack
 $ docker stack deploy -c docker-compose.yml yarn
 ```
 
+Check the status of each service started running the following
+```shell
+$ docker service ls
+ID             NAME           MODE         REPLICAS   IMAGE                                 PORTS
+io5i950qp0ac   yarn_hdp1      replicated   0/1        mkenjis/ubhdpclu_img:latest           
+npmcnr3ihmb4   yarn_hdp2      replicated   0/1        mkenjis/ubhdpclu_img:latest           
+uywev8oekd5h   yarn_hdp3      replicated   0/1        mkenjis/ubhdpclu_img:latest           
+p2hkdqh39xd2   yarn_hdpmst    replicated   1/1        mkenjis/ubhdpclu_img:latest           
+xf8qop5183mj   yarn_spk_cli   replicated   0/1        mkenjis/ubspkcluster1_s3_img:latest
+```
+
 ## Set up steps on Docker Containers
 
 Identify which Docker container started as Hadoop master and run the following docker exec command
 ```shell
 $ docker container ls   # run it in each node and check which <container ID> is running the Hadoop master constainer
+CONTAINER ID   IMAGE                         COMMAND                  CREATED              STATUS              PORTS      NAMES
+a8f16303d872   mkenjis/ubhdpclu_img:latest   "/usr/bin/supervisord"   About a minute ago   Up About a minute   9000/tcp   yarn_hdp2.1.kumbfub0cl20q3jhdyrcep4eb
+77fae0c411ce   mkenjis/ubhdpclu_img:latest   "/usr/bin/supervisord"   About a minute ago   Up About a minute   9000/tcp   yarn_hdpmst.1.r81pn190785n1hdktvrnovw86
 $ docker container exec -it <container ID> bash
 ```
 
 Inside the Hadoop master container, get the public SSH key
 ```shell
 $ cat .ssh/authorized_keys
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABg...
-...QwJ3enC7dGplWvNvQeoMSiOGuMo0= root@8c331d607356
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABg...QwJ3enC7dGplWvNvQeoMSiOGuMo0= root@8c331d607356
 ```
 
 Identify which Docker container started as Spark client and run the following docker exec command
 ```shell
 $ docker container ls   # run it in each node and check which <container ID> is running the Spark client constainer
+CONTAINER ID   IMAGE                                 COMMAND                  CREATED         STATUS         PORTS                                          NAMES
+8f0eeca49d0f   mkenjis/ubspkcluster1_s3_img:latest   "/usr/bin/supervisord"   3 minutes ago   Up 3 minutes   4040/tcp, 7077/tcp, 8080-8082/tcp, 10000/tcp   yarn_spk_cli.1.npllgerwuixwnb9odb3z97tuh
+e9ceb97de97a   mkenjis/ubhdpclu_img:latest           "/usr/bin/supervisord"   4 minutes ago   Up 4 minutes   9000/tcp                                       yarn_hdp1.1.58koqncyw79aaqhirapg502os
 $ docker container exec -it <container ID> bash
 ```
 
 Paste the public SSH key from Hadoop master container into Spark client container´s authorized_keys
 ```shell
-$ vi .ssh/authorized_keys    # append the ssh key from Hadoop master
+$ vi .ssh/authorized_keys    # paste the ssh key from Hadoop master
+```
+
+Copy the setup_spark_files.sh into Hadoop master container and run it to copy the Hadoop conf files into Spark client container
+$ vi setup_spark_files.sh
+$ chmod u+x setup_spark_files.sh
+$ ping spk_cli          
+PING spk_cli (10.0.2.11) 56(84) bytes of data.
+64 bytes from 10.0.2.11 (10.0.2.11): icmp_seq=1 ttl=64 time=0.163 ms
+64 bytes from 10.0.2.11 (10.0.2.11): icmp_seq=2 ttl=64 time=0.116 ms
+^C
+--- spk_cli ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1001ms
+rtt min/avg/max/mdev = 0.116/0.139/0.163/0.023 ms
+$ ./setup_spark_files.sh
+Warning: Permanently added 'spk_cli,10.0.2.11' (ECDSA) to the list of known hosts.
+core-site.xml                                                      100%  137    75.8KB/s   00:00    
+hdfs-site.xml                                                      100%  310   263.4KB/s   00:00    
+yarn-site.xml                                                      100%  771   701.6KB/s   00:00
 ```
 
 Add the following parameters to $SPARK_HOME/conf/spark-defaults.conf
