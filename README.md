@@ -98,6 +98,7 @@ $ vi .ssh/authorized_keys    # paste the ssh key from Hadoop master
 ```
 
 Copy the setup_spark_files.sh into Hadoop master container and run it to copy the Hadoop conf files into Spark client container
+```shell
 $ vi setup_spark_files.sh
 $ chmod u+x setup_spark_files.sh
 $ ping spk_cli          
