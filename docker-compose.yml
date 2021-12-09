@@ -2,7 +2,7 @@ version: "3.1"
 
 services:
   spk_cli:
-    image: mkenjis/ubspkcluster1_s3_img
+    image: mkenjis/ubspkcluster1_img
     environment:
       - HADOOP_HOSTNAME=hdpmst
     networks:
