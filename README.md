@@ -1,7 +1,9 @@
 # Spark client running into YARN cluster in Docker
 
 Apache Spark is an open-source, distributed processing system used for big data workloads.
+
 In this demo, a Spark container uses a Hadoop YARN cluster as a resource management and job scheduling technology to perform distributed data processing.
+
 This Docker image contains Spark binaries prebuilt and uploaded in Docker Hub.
 
 ## Steps to Build Spark image
