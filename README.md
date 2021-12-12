@@ -31,8 +31,7 @@ $ docker image push mkenjis/ubspkcluster1_img
 
 Sets up the environment for Spark client by executing the following steps :
 - sets environment variables for JAVA and SPARK
-- starts the SSH service for passwordless SSH
-- calls create_conf_files.sh to create configuration files on start-up
+- starts the SSH service for passwordless SSHfiles on start-up
 
 > create_conf_files.sh
 
