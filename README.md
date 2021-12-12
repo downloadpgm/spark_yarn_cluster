@@ -27,24 +27,20 @@ $ docker image push mkenjis/ubspkcluster1_img
 
 ## Shell Scripts Inside 
 
-> run_hadoop.sh
+> run_spark.sh
 
-Sets up the environment for the YARN cluster by executing the following steps :
-- sets environment variables for HADOOP and YARN
-- starts the SSH service and scans the slave nodes for passwordless SSH
-- copies the Hadoop configuration files to slave nodes
-- initializes the HDFS filesystem
-- starts Hadoop Name node and Data nodes
-- starts YARN Resource and Node managers
+Sets up the environment for Spark client by executing the following steps :
+- sets environment variables for JAVA and SPARK
+- starts the SSH service for passwordless SSH
+- calls create_conf_files.sh to create configuration files on start-up
 
 > create_conf_files.sh
 
-Creates the following Hadoop files $HADOOP/etc/hadoop directory :
+Creates the following Hadoop files on $SPARK_HOME/conf directory :
 - core-site.xml
 - hdfs-site.xml
-- mapred-site.xml
-- yarn-site.xml
-- hadoop-env.sh
+- hive-site.xml
+- spark-env.sh
 
 ## Initial Steps on Docker Swarm
 
@@ -72,7 +68,7 @@ $ docker node promote node3
 $ docker node promote ...
 ```
 
-Start the YARN cluster by creating a Docker stack 
+Start the Spark and YARN cluster by creating a Docker stack 
 ```shell
 $ docker stack deploy -c docker-compose.yml yarn
 ```
