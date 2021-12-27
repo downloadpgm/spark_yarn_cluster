@@ -89,6 +89,7 @@ $ docker container ls   # run it in each node and check which <container ID> is 
 CONTAINER ID   IMAGE                         COMMAND                  CREATED              STATUS              PORTS      NAMES
 a8f16303d872   mkenjis/ubhdpclu_img:latest   "/usr/bin/supervisord"   About a minute ago   Up About a minute   9000/tcp   yarn_hdp2.1.kumbfub0cl20q3jhdyrcep4eb
 77fae0c411ce   mkenjis/ubhdpclu_img:latest   "/usr/bin/supervisord"   About a minute ago   Up About a minute   9000/tcp   yarn_hdpmst.1.r81pn190785n1hdktvrnovw86
+
 $ docker container exec -it <container ID> bash
 ```
 
@@ -117,6 +118,7 @@ $ docker container ls   # run it in each node and check which <container ID> is 
 CONTAINER ID   IMAGE                                 COMMAND                  CREATED         STATUS         PORTS                                          NAMES
 8f0eeca49d0f   mkenjis/ubspkcluster1_img:latest   "/usr/bin/supervisord"   3 minutes ago   Up 3 minutes   4040/tcp, 7077/tcp, 8080-8082/tcp, 10000/tcp   yarn_spk_cli.1.npllgerwuixwnb9odb3z97tuh
 e9ceb97de97a   mkenjis/ubhdpclu_img:latest           "/usr/bin/supervisord"   4 minutes ago   Up 4 minutes   9000/tcp                                       yarn_hdp1.1.58koqncyw79aaqhirapg502os
+
 $ docker container exec -it <container ID> bash
 ```
 
