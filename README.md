@@ -93,7 +93,9 @@ a8f16303d872   mkenjis/ubhdpclu_img:latest   "/usr/bin/supervisord"   About a mi
 $ docker container exec -it <container ID> bash
 ```
 
-Copy the setup_spark_files.sh into Hadoop master container and run it to copy the Hadoop conf files into Spark client container
+Copy the setup_spark_files.sh into Hadoop master container.
+
+Run it to copy the Hadoop conf files into Spark client container.
 ```shell
 $ vi setup_spark_files.sh
 $ chmod u+x setup_spark_files.sh
