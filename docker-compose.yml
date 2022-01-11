@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   spk_cli:
-    image: mkenjis/ubspkcluster1_s3_img
+    image: mkenjis/ubspkcluster1_img
     volumes:
       - type: bind
         source: /root/.ssh
