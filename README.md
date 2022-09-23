@@ -11,15 +11,7 @@ This Docker image contains Spark binaries prebuilt and uploaded in Docker Hub.
 $ git clone https://github.com/mkenjis/apache_binaries
 $ wget https://archive.apache.org/dist/spark/spark-2.3.2/spark-2.3.2-bin-hadoop2.7.tgz
 $ docker image build -t mkenjis/ubspkcluster1_img
-$ docker login
-Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
-Username: mkenjis
-Password: 
-WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
-Configure a credential helper to remove this warning. See
-https://docs.docker.com/engine/reference/commandline/login/#credentials-store
-
-Login Succeeded
+$ docker login   # provide user and password
 $ docker image push mkenjis/ubspkcluster1_img
 ```
 
@@ -41,7 +33,7 @@ Creates the following Hadoop files on $SPARK_HOME/conf directory :
 
 ## Steps to Start Swarm
 
-1. start swarm mode in Docker in node1
+1. start swarm mode in node1
 ```shell
 $ docker swarm init --advertise-addr <IP node1>
 $ docker swarm join-token manager  # issue a token to add a node as manager to swarm
@@ -55,7 +47,6 @@ $ docker swarm join --token <token> <IP nodeN>:2377
 3. start a YARN cluster manager and spark client
 ```shell
 $ docker stack deploy -c docker-compose.yml yarn
-
 $ docker service ls
 ID             NAME           MODE         REPLICAS   IMAGE                                 PORTS
 io5i950qp0ac   yarn_hdp1      replicated   0/1        mkenjis/ubhdpclu_img:latest           
@@ -67,16 +58,15 @@ xf8qop5183mj   yarn_spk_cli   replicated   0/1        mkenjis/ubspkcluster1_img:
 
 ## Steps to Set up Spark client container
 
-1. copy Hadoop conf files, from hadoop master to spark client
+1. copy hadoop conf files, from hadoop master to spark client
 ```shell
-$ docker container ls   # run it in each node and check which <container ID> is running the Hadoop master constainer
+$ docker container ls   # run in each node to identify hdpmst constainer
 CONTAINER ID   IMAGE                         COMMAND                  CREATED              STATUS              PORTS      NAMES
 a8f16303d872   mkenjis/ubhdpclu_img:latest   "/usr/bin/supervisord"   About a minute ago   Up About a minute   9000/tcp   yarn_hdp2.1.kumbfub0cl20q3jhdyrcep4eb
 77fae0c411ce   mkenjis/ubhdpclu_img:latest   "/usr/bin/supervisord"   About a minute ago   Up About a minute   9000/tcp   yarn_hdpmst.1.r81pn190785n1hdktvrnovw86
 
 $ docker container exec -it <hdpmst container ID> bash
-```
-```shell
+
 $ vi setup_spark_files.sh
 $ chmod u+x setup_spark_files.sh
 $ ./setup_spark_files.sh
@@ -86,7 +76,7 @@ hdfs-site.xml                                                      100%  310   2
 yarn-site.xml                                                      100%  771   701.6KB/s   00:00
 ```
 
-2. add parameters to $SPARK_HOME/conf/spark-defaults.conf (in spark client)
+2. add parameters to spark-defaults.conf (in spark client)
 ```shell
 $ docker container ls   # run it in each node and check which <container ID> is running the Spark client constainer
 CONTAINER ID   IMAGE                                 COMMAND                  CREATED         STATUS         PORTS                                          NAMES
@@ -94,9 +84,7 @@ CONTAINER ID   IMAGE                                 COMMAND                  CR
 e9ceb97de97a   mkenjis/ubhdpclu_img:latest           "/usr/bin/supervisord"   4 minutes ago   Up 4 minutes   9000/tcp                                       yarn_hdp1.1.58koqncyw79aaqhirapg502os
 
 $ docker container exec -it <spk_cli ID> bash
-```
 
-```shell
 $ vi $SPARK_HOME/conf/spark-defaults.conf
 spark.driver.memory  1024m
 spark.yarn.am.memory 1024m
