@@ -58,7 +58,7 @@ xf8qop5183mj   yarn_spk_cli   replicated   0/1        mkenjis/ubspkcluster1_img:
 
 ## Set up Spark client
 
-1. access hadoop master node and copy hadoop conf files, from hadoop master to spark client
+1. access hadoop master node and copy hadoop conf files to spark client
 ```shell
 $ docker container ls   # run in each node to identify hdpmst constainer
 CONTAINER ID   IMAGE                         COMMAND                  CREATED              STATUS              PORTS      NAMES
