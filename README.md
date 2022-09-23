@@ -6,7 +6,7 @@ In this demo, a Spark container uses a Hadoop YARN cluster as a resource managem
 
 This Docker image contains Spark binaries prebuilt and uploaded in Docker Hub.
 
-## Steps to Build Spark image
+## Build Spark image
 ```shell
 $ git clone https://github.com/mkenjis/apache_binaries
 $ wget https://archive.apache.org/dist/spark/spark-2.3.2/spark-2.3.2-bin-hadoop2.7.tgz
@@ -31,7 +31,7 @@ Creates the following Hadoop files on $SPARK_HOME/conf directory :
 - hive-site.xml
 - spark-env.sh
 
-## Steps to Start Swarm
+## Start Swarm cluster
 
 1. start swarm mode in node1
 ```shell
@@ -56,7 +56,7 @@ p2hkdqh39xd2   yarn_hdpmst    replicated   1/1        mkenjis/ubhdpclu_img:lates
 xf8qop5183mj   yarn_spk_cli   replicated   0/1        mkenjis/ubspkcluster1_img:latest
 ```
 
-## Steps to Set up Spark client container
+## Set up Spark client
 
 1. copy hadoop conf files, from hadoop master to spark client
 ```shell
