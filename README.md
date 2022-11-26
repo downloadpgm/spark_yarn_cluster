@@ -36,23 +36,31 @@ Creates the following Hadoop files on $SPARK_HOME/conf directory :
 1. start swarm mode in node1
 ```shell
 $ docker swarm init --advertise-addr <IP node1>
-$ docker swarm join-token manager  # issue a token to add a node as manager to swarm
+$ docker swarm join-token worker  # issue a token to add a node as worker to swarm
 ```
 
-2. add more managers in swarm cluster (node2, node3, ...)
+2. add 3 more workers in swarm cluster (node2, node3, node4)
 ```shell
 $ docker swarm join --token <token> <IP nodeN>:2377
 ```
 
-3. start a YARN cluster manager and spark client
+3. label eacho node to anchor each container in swarm cluster
+```shell
+docker node update --label-add hostlabel=hdpmst node1
+docker node update --label-add hostlabel=hdp1 node2
+docker node update --label-add hostlabel=hdp2 node3
+docker node update --label-add hostlabel=hdp3 node4
+```
+
+4. start a YARN cluster manager and spark client
 ```shell
 $ docker stack deploy -c docker-compose.yml yarn
 $ docker service ls
 ID             NAME           MODE         REPLICAS   IMAGE                                 PORTS
-io5i950qp0ac   yarn_hdp1      replicated   0/1        mkenjis/ubhdpclu_img:latest           
-npmcnr3ihmb4   yarn_hdp2      replicated   0/1        mkenjis/ubhdpclu_img:latest           
-uywev8oekd5h   yarn_hdp3      replicated   0/1        mkenjis/ubhdpclu_img:latest           
-p2hkdqh39xd2   yarn_hdpmst    replicated   1/1        mkenjis/ubhdpclu_img:latest           
+io5i950qp0ac   yarn_hdp1      replicated   0/1        mkenjis/ubhdpclu_vol_img:latest           
+npmcnr3ihmb4   yarn_hdp2      replicated   0/1        mkenjis/ubhdpclu_vol_img:latest           
+uywev8oekd5h   yarn_hdp3      replicated   0/1        mkenjis/ubhdpclu_vol_img:latest           
+p2hkdqh39xd2   yarn_hdpmst    replicated   1/1        mkenjis/ubhdpclu_vol_img:latest           
 xf8qop5183mj   yarn_spk_cli   replicated   0/1        mkenjis/ubspkcluster1_img:latest
 ```
 
@@ -61,9 +69,9 @@ xf8qop5183mj   yarn_spk_cli   replicated   0/1        mkenjis/ubspkcluster1_img:
 1. access hadoop master node and copy hadoop conf files to spark client
 ```shell
 $ docker container ls   # run in each node to identify hdpmst constainer
-CONTAINER ID   IMAGE                         COMMAND                  CREATED              STATUS              PORTS      NAMES
-a8f16303d872   mkenjis/ubhdpclu_img:latest   "/usr/bin/supervisord"   About a minute ago   Up About a minute   9000/tcp   yarn_hdp2.1.kumbfub0cl20q3jhdyrcep4eb
-77fae0c411ce   mkenjis/ubhdpclu_img:latest   "/usr/bin/supervisord"   About a minute ago   Up About a minute   9000/tcp   yarn_hdpmst.1.r81pn190785n1hdktvrnovw86
+CONTAINER ID   IMAGE                             COMMAND                  CREATED              STATUS              PORTS      NAMES
+a8f16303d872   mkenjis/ubhdpclu_vol_img:latest   "/usr/bin/supervisord"   About a minute ago   Up About a minute   9000/tcp   yarn_hdp2.1.kumbfub0cl20q3jhdyrcep4eb
+77fae0c411ce   mkenjis/ubhdpclu_vol_img:latest   "/usr/bin/supervisord"   About a minute ago   Up About a minute   9000/tcp   yarn_hdpmst.1.r81pn190785n1hdktvrnovw86
 
 $ docker container exec -it <hdpmst container ID> bash
 
@@ -81,7 +89,7 @@ yarn-site.xml                                                      100%  771   7
 $ docker container ls   # run it in each node and check which <container ID> is running the Spark client constainer
 CONTAINER ID   IMAGE                                 COMMAND                  CREATED         STATUS         PORTS                                          NAMES
 8f0eeca49d0f   mkenjis/ubspkcluster1_img:latest   "/usr/bin/supervisord"   3 minutes ago   Up 3 minutes   4040/tcp, 7077/tcp, 8080-8082/tcp, 10000/tcp   yarn_spk_cli.1.npllgerwuixwnb9odb3z97tuh
-e9ceb97de97a   mkenjis/ubhdpclu_img:latest           "/usr/bin/supervisord"   4 minutes ago   Up 4 minutes   9000/tcp                                       yarn_hdp1.1.58koqncyw79aaqhirapg502os
+e9ceb97de97a   mkenjis/ubhdpclu_vol_img:latest           "/usr/bin/supervisord"   4 minutes ago   Up 4 minutes   9000/tcp                                       yarn_hdp1.1.58koqncyw79aaqhirapg502os
 
 $ docker container exec -it <spk_cli ID> bash
 

@@ -12,8 +12,14 @@ services:
     depends_on:
       - hdpmst
   hdpmst:
-    image: mkenjis/ubhdpclu_img
+    image: mkenjis/ubhdpclu_vol_img
+    deploy:
+      placement:
+        constraints:
+          - node.labels.hostlabel == hdpmst
     volumes:
+      - .:/root/staging
+      - name0:/hadoop/hdfs/namenode
       - type: bind
         source: /root/.ssh
         target: /root/.ssh
@@ -24,24 +30,39 @@ services:
     depends_on:
       - hdp1,hdp2,hdp3
   hdp1:
-    image: mkenjis/ubhdpclu_img
+    image: mkenjis/ubhdpclu_vol_img
+    deploy:
+      placement:
+        constraints:
+          - node.labels.hostlabel == hdp1
     volumes:
+      - data1:/hadoop/hdfs/datanode
       - type: bind
         source: /root/.ssh
         target: /root/.ssh
     networks:
       - mynet
   hdp2:
-    image: mkenjis/ubhdpclu_img
+    image: mkenjis/ubhdpclu_vol_img
+    deploy:
+      placement:
+        constraints:
+          - node.labels.hostlabel == hdp2
     volumes:
+      - data2:/hadoop/hdfs/datanode
       - type: bind
         source: /root/.ssh
         target: /root/.ssh
     networks:
       - mynet
   hdp3:
-    image: mkenjis/ubhdpclu_img
+    image: mkenjis/ubhdpclu_vol_img
+    deploy:
+      placement:
+        constraints:
+          - node.labels.hostlabel == hdp3
     volumes:
+      - data3:/hadoop/hdfs/datanode
       - type: bind
         source: /root/.ssh
         target: /root/.ssh
@@ -50,3 +71,9 @@ services:
 
 networks:
   mynet:
+  
+volumes:
+  name0:
+  data1:
+  data2:
+  data3:
