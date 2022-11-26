@@ -44,7 +44,7 @@ $ docker swarm join-token worker  # issue a token to add a node as worker to swa
 $ docker swarm join --token <token> <IP nodeN>:2377
 ```
 
-3. label eacho node to anchor each container in swarm cluster
+3. label each node to anchor each container in swarm cluster
 ```shell
 docker node update --label-add hostlabel=hdpmst node1
 docker node update --label-add hostlabel=hdp1 node2
