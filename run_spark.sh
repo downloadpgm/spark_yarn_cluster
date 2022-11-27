@@ -4,6 +4,9 @@ export JAVA_HOME=/usr/local/jre1.8.0_181
 export CLASSPATH=$JAVA_HOME/lib
 export PATH=$PATH:.:$JAVA_HOME/bin
 
+export HADOOP_HOME=/usr/local/hadoop-2.7.3
+export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
+
 export SPARK_HOME=/usr/local/spark-2.3.2-bin-hadoop2.7
 export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
 
@@ -18,15 +21,21 @@ ssh-keyscan 0.0.0.0 >>~/.ssh/known_hosts
 
 if [ -n "${SPARK_HOST_SLAVES}" ]; then
 
-   sleep 30
+   sleep 20
    for SPARK_HOST in `echo ${SPARK_HOST_SLAVES} | tr ',' ' '`; do
-      ssh-keyscan ${SPARK_HOST} >~/.ssh/known_hosts
-	  echo ${SPARK_HOST} >>$SPARK_HOME/conf/slaves
+      ssh-keyscan ${SPARK_HOST} >>~/.ssh/known_hosts
+          echo ${SPARK_HOST} >>$SPARK_HOME/conf/slaves
    done
    $SPARK_HOME/sbin/start-master.sh
    $SPARK_HOME/sbin/start-slaves.sh
 fi
 
-while [ 1 -eq 1 ]; do
-   sleep 10
-done
+if [ -n "${HADOOP_HOST_MASTER}" ]; then
+
+   sleep 30
+   ssh-keyscan ${HADOOP_HOST_MASTER} >>~/.ssh/known_hosts
+   scp root@${HADOOP_HOST_MASTER}:${HADOOP_CONF_DIR}/core-site.xml ${SPARK_HOME}/conf/core-site.xml
+   scp root@${HADOOP_HOST_MASTER}:${HADOOP_CONF_DIR}/hdfs-site.xml ${SPARK_HOME}/conf/hdfs-site.xml
+   scp root@${HADOOP_HOST_MASTER}:${HADOOP_CONF_DIR}/yarn-site.xml ${SPARK_HOME}/conf/yarn-site.xml
+
+fi

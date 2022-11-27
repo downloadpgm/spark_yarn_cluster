@@ -8,9 +8,8 @@ This Docker image contains Spark binaries prebuilt and uploaded in Docker Hub.
 
 ## Build Spark image
 ```shell
-$ git clone https://github.com/mkenjis/apache_binaries
 $ wget https://archive.apache.org/dist/spark/spark-2.3.2/spark-2.3.2-bin-hadoop2.7.tgz
-$ docker image build -t mkenjis/ubspkcluster1_img
+$ docker image build -t mkenjis/ubspkcluster2_img
 $ docker login   # provide user and password
 $ docker image push mkenjis/ubspkcluster1_img
 ```
@@ -66,25 +65,7 @@ xf8qop5183mj   yarn_spk_cli   replicated   0/1        mkenjis/ubspkcluster1_img:
 
 ## Set up Spark client
 
-1. access hadoop master node and copy hadoop conf files to spark client
-```shell
-$ docker container ls   # run in each node to identify hdpmst constainer
-CONTAINER ID   IMAGE                             COMMAND                  CREATED              STATUS              PORTS      NAMES
-a8f16303d872   mkenjis/ubhdpclu_vol_img:latest   "/usr/bin/supervisord"   About a minute ago   Up About a minute   9000/tcp   yarn_hdp2.1.kumbfub0cl20q3jhdyrcep4eb
-77fae0c411ce   mkenjis/ubhdpclu_vol_img:latest   "/usr/bin/supervisord"   About a minute ago   Up About a minute   9000/tcp   yarn_hdpmst.1.r81pn190785n1hdktvrnovw86
-
-$ docker container exec -it <hdpmst container ID> bash
-
-$ vi setup_spark_files.sh
-$ chmod u+x setup_spark_files.sh
-$ ./setup_spark_files.sh
-Warning: Permanently added 'spk_cli,10.0.2.11' (ECDSA) to the list of known hosts.
-core-site.xml                                                      100%  137    75.8KB/s   00:00    
-hdfs-site.xml                                                      100%  310   263.4KB/s   00:00    
-yarn-site.xml                                                      100%  771   701.6KB/s   00:00
-```
-
-2. access spark client node and add parameters to spark-defaults.conf (in spark client)
+1. access spark client node and add parameters to spark-defaults.conf (in spark client)
 ```shell
 $ docker container ls   # run it in each node and check which <container ID> is running the Spark client constainer
 CONTAINER ID   IMAGE                                 COMMAND                  CREATED         STATUS         PORTS                                          NAMES
@@ -99,7 +80,7 @@ spark.yarn.am.memory 1024m
 spark.executor.memory  1536m
 ```
 
-3. start spark-shell
+2. start spark-shell
 ```shell
 $ spark-shell --master yarn
 2021-12-05 11:09:14 WARN  NativeCodeLoader:62 - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
