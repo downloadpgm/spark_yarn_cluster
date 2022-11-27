@@ -2,7 +2,7 @@ version: "3.1"
 
 services:
   spk_cli:
-    image: mkenjis/ubspkcluster2_img
+    image: mkenjis/ubspkcluster1_img
     deploy:
       placement:
         constraints:
