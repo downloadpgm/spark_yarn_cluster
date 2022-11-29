@@ -51,16 +51,27 @@ docker node update --label-add hostlabel=hdp2 node3
 docker node update --label-add hostlabel=hdp3 node4
 ```
 
-4. start a YARN cluster manager and spark client
+4. create an external "overlay" network in swarm to link the 2 stacks (hdp and spk)
 ```shell
-$ docker stack deploy -c docker-compose.yml yarn
+docker network create --driver overlay mynet
+```
+
+5. start the Hadoop cluster (with HDFS and YARN)
+```shell
+$ docker stack deploy -c docker-compose-hdp.yml hdp
+$ docker stack ps hdp
+jeti90luyqrb   hdp_hdp1.1     mkenjis/ubhdpclu_vol_img:latest   node2     Running         Preparing 39 seconds ago             
+tosjcz96hnj9   hdp_hdp2.1     mkenjis/ubhdpclu_vol_img:latest   node3     Running         Preparing 38 seconds ago             
+t2ooig7fbt9y   hdp_hdp3.1     mkenjis/ubhdpclu_vol_img:latest   node4     Running         Preparing 39 seconds ago             
+wym7psnwca4n   hdp_hdpmst.1   mkenjis/ubhdpclu_vol_img:latest   node1     Running         Preparing 39 seconds ago
+```
+
+4. start spark client
+```shell
+$ docker stack deploy -c docker-compose.yml spk
 $ docker service ls
-ID             NAME           MODE         REPLICAS   IMAGE                                 PORTS
-io5i950qp0ac   yarn_hdp1      replicated   0/1        mkenjis/ubhdpclu_vol_img:latest           
-npmcnr3ihmb4   yarn_hdp2      replicated   0/1        mkenjis/ubhdpclu_vol_img:latest           
-uywev8oekd5h   yarn_hdp3      replicated   0/1        mkenjis/ubhdpclu_vol_img:latest           
-p2hkdqh39xd2   yarn_hdpmst    replicated   1/1        mkenjis/ubhdpclu_vol_img:latest           
-xf8qop5183mj   yarn_spk_cli   replicated   0/1        mkenjis/ubspkcluster1_img:latest
+ID             NAME          MODE         REPLICAS   IMAGE                                 PORTS
+xf8qop5183mj   spk_spk_cli   replicated   0/1        mkenjis/ubspkcluster1_img:latest
 ```
 
 ## Set up Spark client
