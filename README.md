@@ -9,7 +9,7 @@ This Docker image contains Spark binaries prebuilt and uploaded in Docker Hub.
 ## Build Spark image
 ```shell
 $ wget https://archive.apache.org/dist/spark/spark-2.3.2/spark-2.3.2-bin-hadoop2.7.tgz
-$ docker image build -t mkenjis/ubspkcluster1_img
+$ docker image build -t mkenjis/ubspkcluster1_img .
 $ docker login   # provide user and password
 $ docker image push mkenjis/ubspkcluster1_img
 ```
