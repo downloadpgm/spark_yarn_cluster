@@ -27,7 +27,7 @@ if [ -n "${SPARK_HOST_SLAVES}" ]; then
 
    for SPARK_HOST in `echo ${SPARK_HOST_SLAVES} | tr ',' ' '`; do
       ssh-keyscan ${SPARK_HOST} >>~/.ssh/known_hosts
-        ssh root@${SPARK_HOST} "cat /etc/hostname" >>${SPARK_HOME}/conf/slaves
+      ssh root@${SPARK_HOST} "cat /etc/hostname" >>${SPARK_HOME}/conf/slaves
    done
 
    # start Spark master and slaves nodes
