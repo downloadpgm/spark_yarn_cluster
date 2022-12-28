@@ -9,9 +9,9 @@ This Docker image contains Spark binaries prebuilt and uploaded in Docker Hub.
 ## Build Spark image
 ```shell
 $ wget https://archive.apache.org/dist/spark/spark-2.3.2/spark-2.3.2-bin-hadoop2.7.tgz
-$ docker image build -t mkenjis/ubspkcluster1_img .
+$ docker image build -t mkenjis/ubspkcli_yarn_img .
 $ docker login   # provide user and password
-$ docker image push mkenjis/ubspkcluster1_img
+$ docker image push mkenjis/ubspkcli_yarn_img
 ```
 
 ## Shell Scripts Inside 
@@ -72,7 +72,7 @@ wym7psnwca4n   hdp_hdpmst.1   mkenjis/ubhdpclu_vol_img:latest   node1     Runnin
 $ docker stack deploy -c docker-compose.yml spk
 $ docker service ls
 ID             NAME          MODE         REPLICAS   IMAGE                                 PORTS
-xf8qop5183mj   spk_spk_cli   replicated   0/1        mkenjis/ubspkcluster1_img:latest
+xf8qop5183mj   spk_spk_cli   replicated   0/1        mkenjis/ubspkcli_yarn_img:latest
 ```
 
 ## Set up Spark client
@@ -81,7 +81,7 @@ xf8qop5183mj   spk_spk_cli   replicated   0/1        mkenjis/ubspkcluster1_img:l
 ```shell
 $ docker container ls   # run it in each node and check which <container ID> is running the Spark client constainer
 CONTAINER ID   IMAGE                                 COMMAND                  CREATED         STATUS         PORTS                                          NAMES
-8f0eeca49d0f   mkenjis/ubspkcluster1_img:latest   "/usr/bin/supervisord"   3 minutes ago   Up 3 minutes   4040/tcp, 7077/tcp, 8080-8082/tcp, 10000/tcp   yarn_spk_cli.1.npllgerwuixwnb9odb3z97tuh
+8f0eeca49d0f   mkenjis/ubspkcli_yarn_img:latest   "/usr/bin/supervisord"   3 minutes ago   Up 3 minutes   4040/tcp, 7077/tcp, 8080-8082/tcp, 10000/tcp   yarn_spk_cli.1.npllgerwuixwnb9odb3z97tuh
 e9ceb97de97a   mkenjis/ubhdpclu_vol_img:latest           "/usr/bin/supervisord"   4 minutes ago   Up 4 minutes   9000/tcp                                       yarn_hdp1.1.58koqncyw79aaqhirapg502os
 
 $ docker container exec -it <spk_cli ID> bash
