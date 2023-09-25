@@ -87,7 +87,10 @@ e9ceb97de97a   mkenjis/ubhdpclu_vol_img:latest           "/usr/bin/supervisord" 
 $ docker container exec -it <spk_cli ID> bash
 ```
 
-2. start spark-shell
+2. start spark-shell acessing YARN cluster
+
+Note: spark client docker image copies need *.xml files from hadoop master at $HADOOP_HOME/etc/hadoop
+
 ```shell
 $ spark-shell --master yarn
 2021-12-05 11:09:14 WARN  NativeCodeLoader:62 - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
