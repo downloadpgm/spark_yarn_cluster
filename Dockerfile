@@ -26,8 +26,6 @@ RUN chmod +x run_spark.sh
 COPY stop_spark.sh .
 RUN chmod +x stop_spark.sh
 
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
 EXPOSE 10000 7077 4040 8080 8081 8082
 
-CMD ["/usr/bin/supervisord"]
+CMD /bin/bash -c "/root/run_spark.sh"; sleep infinity
